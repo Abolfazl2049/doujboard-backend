@@ -11,3 +11,4 @@ priv_key.pem
 pub_key.pem
 db_ssl.pem
 media
+app.db
