@@ -3,14 +3,21 @@
   "info": {
     "version": "1.0.0",
     "title": "Doujboard Backend",
-    "description": ""
+    "description": "API documentation for Doujboard Backend"
   },
-  "host": 3000,
+  "host": "localhost:4400",
   "basePath": "/",
   "schemes": [
     "http"
   ],
-  "securityDefinitions": {},
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "scheme": "bearer",
+      "in": "header"
+    }
+  },
   "consumes": [
     "application/json"
   ],
@@ -49,8 +56,8 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -85,6 +92,13 @@
     "/douj/": {
       "get": {
         "description": "",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -100,16 +114,22 @@
             "schema": {
               "type": "object",
               "properties": {
-                "category": {
+                "img": {
                   "example": "any"
                 },
                 "title": {
+                  "example": "any"
+                },
+                "category": {
                   "example": "any"
                 },
                 "hidden": {
                   "example": "any"
                 },
                 "description": {
+                  "example": "any"
+                },
+                "link": {
                   "example": "any"
                 }
               }
@@ -165,5 +185,9 @@
         }
       }
     }
-  }
+  },
+  "autoBody": true,
+  "autoHeaders": true,
+  "autoQuery": true,
+  "autoResponse": true
 }

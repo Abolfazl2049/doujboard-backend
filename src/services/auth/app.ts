@@ -37,7 +37,7 @@ let login = async (req: Request, res: Response, next: NextFunction) => {
 
     if (isValid) {
       const tokenObject = issueJWT(user);
-      sendRes(req, res, {token: tokenObject.token, expiresIn: tokenObject.expires});
+      res.status(200).json({token: tokenObject.token, expiresIn: tokenObject.expires});
     } else
       throw {
         status: 401,

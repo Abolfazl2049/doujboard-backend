@@ -1,18 +1,53 @@
 import generateSwagger from "swagger-autogen";
 import {appConfig} from "#src/config.js";
 
+// Create a sample response object
+const responseJson = {
+  ok: true,
+  data: '#swagger.responses[200].schema.$ref = "#/definitions/ResponseSchema"'
+};
+
 const swaggerDocument = {
   info: {
     version: "1.0.0",
-    title: "Doujboard Backend"
+    title: "Doujboard Backend",
+    description: "API documentation for Doujboard Backend"
   },
-  host: appConfig.PORT,
+  host: `localhost:${appConfig.PORT}`,
   basePath: "/",
   schemes: ["http"],
   consumes: ["application/json"],
   produces: ["application/json"],
-  securityDefinitions: {}
+  autoBody: true,
+  autoHeaders: true,
+  autoQuery: true,
+  autoResponse: true, // Enable automatic response detection
+  securityDefinitions: {
+    bearerAuth: {
+      type: "apiKey",
+      name: "Authorization",
+      scheme: "bearer",
+      in: "header"
+    }
+  }
 };
+
+const doc = {
+  swagger: "2.0",
+  ...swaggerDocument
+};
+
 const swaggerFile = "../swagger_output.json";
 const apiRouteFile = ["../src/router.ts"];
-generateSwagger(swaggerFile, apiRouteFile, swaggerDocument);
+
+// Configure swagger-autogen to detect responses
+const options = {
+  openapi: "3.0.0",
+  language: "en-US",
+  disableLogs: false,
+  autoHeaders: true,
+  autoQuery: true,
+  autoBody: true
+};
+
+generateSwagger(swaggerFile, apiRouteFile, doc);
