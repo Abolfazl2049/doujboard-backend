@@ -21,15 +21,20 @@ const swaggerDocument = {
   autoBody: true,
   autoHeaders: true,
   autoQuery: true,
-  autoResponse: true, // Enable automatic response detection
+  autoResponse: true,
   securityDefinitions: {
-    bearerAuth: {
+    Bearer: {
       type: "apiKey",
       name: "Authorization",
-      scheme: "bearer",
-      in: "header"
+      in: "header",
+      description: "Enter your bearer token in the format: Bearer <token>"
     }
-  }
+  },
+  security: [
+    {
+      Bearer: []
+    }
+  ]
 };
 
 const doc = {

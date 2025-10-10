@@ -32,13 +32,31 @@ const Douj = sequelize.define("Douj", {
     allowNull: true,
     type: DataTypes.TEXT
   },
-  link: DataTypes.STRING
+  link: DataTypes.STRING,
+  user: DataTypes.INTEGER,
+  visibility: {
+    type: DataTypes.ENUM("private", "public"),
+    allowNull: false,
+    validate: {
+      isIn: [["private", "public"]]
+    }
+  },
+  tags: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: true
+  }
 });
 Category.hasMany(Douj, {
   foreignKey: "category"
 });
 Douj.belongsTo(Category, {
   foreignKey: "category"
+});
+authDb.User.hasMany(Douj, {
+  foreignKey: "user"
+});
+Douj.belongsTo(authDb.User, {
+  foreignKey: "user"
 });
 
 export default {

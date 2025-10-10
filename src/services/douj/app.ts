@@ -3,6 +3,8 @@ import doujDb from "./db.js";
 import {sendRes} from "#src/utils/api-response.js";
 import {validateReqSchema} from "#src/utils/validation.js";
 import cloudinary from "#src/tools/cloudinary.js";
+import {Op} from "sequelize";
+import {Pagination} from "../public/pagination.class.js";
 
 const getList = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -41,7 +43,9 @@ const newDouj = async (req: Request, res: Response, next: NextFunction) => {
       img: imgRes.url,
       hidden: req.body.hidden,
       description: req.body.description ?? null,
-      link: req.body.link
+      link: req.body.link,
+      tags: req.body.tags ? req.body.tags.split(",").map((tag: string) => tag.trim()) : null,
+      visibility: req.body.visibility || "private"
     });
     sendRes(req, res, newDouj);
   } catch (err) {
@@ -52,16 +56,32 @@ const newDouj = async (req: Request, res: Response, next: NextFunction) => {
 let newCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
     validateReqSchema(req);
-    let newCategory = await doujDb.Category.create({user: req.user.id, name: req.body.name});
+    let newCategory = await doujDb.Category.create({user: req.user?.id, name: req.body.name});
     sendRes(req, res, newCategory);
   } catch (err) {
     next(err);
   }
 };
 
+async function getPublicDoujs(req: Request, res: Response, next: NextFunction) {
+  try {
+    const {category, search, tags} = req.query;
+    const whereClause: any = {visibility: "public"};
+    if (category) whereClause.category = category;
+    const {page, setCount, limit} = new Pagination(req);
+    if (search) whereClause.title = {[Op.like]: `%${search}%`};
+    if (tags) whereClause.tags = {[Op.contains]: tags};
+    const {count, rows} = await doujDb.Douj.findAndCountAll({where: whereClause, offset: (page - 1) * limit, limit});
+    const {hasNext, hasPrev} = setCount(count);
+    res.status(200).json({rows, page, limit, count, hasNext, hasPrev});
+  } catch (err) {
+    next(err);
+  }
+}
 export default {
   getList,
   getCategoryList,
   newDouj,
-  newCategory
+  newCategory,
+  getPublicDoujs
 };

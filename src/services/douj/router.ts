@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {newCategorySchema, newDoujSchema} from "./schema.js";
+import {newCategorySchema, newDoujSchema, publicDoujGetListSchema} from "./schema.js";
 import DoujService from "./app.js";
 
 const doujRouter = Router();
@@ -19,5 +19,5 @@ doujRouter.post(
 );
 doujRouter.get("/category", DoujService.getCategoryList);
 doujRouter.post("/category", newCategorySchema, DoujService.newCategory);
-
+doujRouter.get("/public", publicDoujGetListSchema, DoujService.getPublicDoujs);
 export default doujRouter;

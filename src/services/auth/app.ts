@@ -3,7 +3,7 @@ import {genPassword, issueJWT, validPassword} from "./lib.js";
 import authDb from "../user/db.js";
 import {sendRes} from "#src/utils/api-response.js";
 import {validateReqSchema} from "#src/utils/validation.js";
-
+import DoujDb from "../douj/db.js";
 let signup = async (req: Request, res: Response, next: NextFunction) => {
   try {
     validateReqSchema(req);
@@ -18,6 +18,11 @@ let signup = async (req: Request, res: Response, next: NextFunction) => {
       hash: hash,
       salt: salt
     });
+    try {
+      await DoujDb.Category.create({user: user.id, name: "Default"});
+    } catch (e) {
+      console.error("Error creating default category:", e);
+    }
     const token = issueJWT(user);
 
     sendRes(req, res, {

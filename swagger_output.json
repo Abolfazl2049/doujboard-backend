@@ -11,11 +11,11 @@
     "http"
   ],
   "securityDefinitions": {
-    "bearerAuth": {
+    "Bearer": {
       "type": "apiKey",
       "name": "Authorization",
-      "scheme": "bearer",
-      "in": "header"
+      "in": "header",
+      "description": "Enter your bearer token in the format: Bearer <token>"
     }
   },
   "consumes": [
@@ -175,6 +175,28 @@
         }
       }
     },
+    "/douj/public": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/user/profile": {
       "get": {
         "description": "",
@@ -184,10 +206,64 @@
           }
         }
       }
+    },
+    "/reaction/{douj}/reactions": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "douj",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "douj",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
     }
   },
   "autoBody": true,
   "autoHeaders": true,
   "autoQuery": true,
-  "autoResponse": true
+  "autoResponse": true,
+  "security": [
+    {
+      "Bearer": []
+    }
+  ]
 }
