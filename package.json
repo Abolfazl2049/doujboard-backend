@@ -10,8 +10,9 @@
     "compile": "npx tsc --noCheck",
     "minify": "node scripts/terser-minify.js",
     "build": "yarn compile && yarn minify",
-    "render": "yarn && yarn build",
-    "swagger": "tsx scripts/swagger.ts"
+    "render": "yarn && yarn build && yarn migrate",
+    "swagger": "tsx scripts/swagger.ts",
+    "migrate": "npx sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "",
@@ -49,6 +50,7 @@
     "@types/node": "^24.7.0",
     "@types/passport-jwt": "^4.0.1",
     "@types/swagger-ui-express": "^4.1.8",
+    "sequelize-cli": "^6.6.3",
     "terser": "^5.44.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
