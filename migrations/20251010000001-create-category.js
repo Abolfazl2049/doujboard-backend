@@ -29,12 +29,23 @@ const migration = {
       }
     });
 
-    // Add index for foreign key
-    await queryInterface.addIndex("Categories", ["user"]);
+    // Add index for foreign key if it doesn't exist
+    try {
+      await queryInterface.sequelize.query('CREATE INDEX IF NOT EXISTS "categories_user" ON "Categories" ("user");');
+    } catch (error) {
+      console.log("Index might already exist:", error.message);
+    }
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Categories");
+    try {
+      // Drop any foreign key constraints first
+      await queryInterface.sequelize.query('ALTER TABLE IF EXISTS "DoujCategories" DROP CONSTRAINT IF EXISTS "DoujCategories_categoryId_fkey";');
+
+      await queryInterface.dropTable("Categories");
+    } catch (error) {
+      console.log("Error in down migration:", error.message);
+    }
   }
 };
 

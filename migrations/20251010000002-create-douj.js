@@ -75,19 +75,32 @@ const migration = {
       }
     });
 
-    // Add indexes for foreign keys and frequently queried fields
-    await queryInterface.addIndex("Doujs", ["category"]);
-    await queryInterface.addIndex("Doujs", ["user"]);
-    await queryInterface.addIndex("Doujs", ["visibility"]);
+    // Add indexes for foreign keys and frequently queried fields if they don't exist
+    try {
+      await queryInterface.sequelize.query('CREATE INDEX IF NOT EXISTS "doujs_category" ON "Doujs" ("category");');
+      await queryInterface.sequelize.query('CREATE INDEX IF NOT EXISTS "doujs_user" ON "Doujs" ("user");');
+      await queryInterface.sequelize.query('CREATE INDEX IF NOT EXISTS "doujs_visibility" ON "Doujs" ("visibility");');
+    } catch (error) {
+      console.log("Error creating indexes:", error.message);
+    }
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Doujs");
-    // Try to drop the enum type
+    // Drop foreign key constraints first
     try {
+      // Drop constraints from DoujCategories table
+      await queryInterface.sequelize.query('ALTER TABLE IF EXISTS "DoujCategories" DROP CONSTRAINT IF EXISTS "DoujCategories_doujId_fkey";');
+
+      // Drop constraints from Categories table
+      await queryInterface.sequelize.query('ALTER TABLE IF EXISTS "Categories" DROP CONSTRAINT IF EXISTS "Categories_category_fkey";');
+
+      // Now we can safely drop the table
+      await queryInterface.dropTable("Doujs");
+
+      // Try to drop the enum type
       await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_Doujs_visibility";');
     } catch (error) {
-      console.log("Error dropping enum type:", error.message);
+      console.log("Error in down migration:", error.message);
     }
   }
 };

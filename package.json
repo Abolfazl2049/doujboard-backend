@@ -10,7 +10,7 @@
     "compile": "npx tsc --noCheck",
     "minify": "node scripts/terser-minify.js",
     "build": "yarn compile && yarn minify",
-    "render": "yarn && yarn build && yarn migrate",
+    "render": "yarn && yarn build",
     "swagger": "tsx scripts/swagger.ts",
     "migrate": "npx sequelize-cli db:migrate"
   },
