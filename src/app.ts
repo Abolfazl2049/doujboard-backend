@@ -3,6 +3,7 @@ import express from "express";
 import passport from "passport";
 import sequelize from "./tools/sequelize.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import {errorHandler} from "./middlewares/error-handler.js";
 import {appRouter} from "./router.js";
 import swaggerUi from "swagger-ui-express";
@@ -22,9 +23,15 @@ app.use(admin.options.rootPath, adminRouter);
 
 //  app basic settings
 app.use(applyLimiter());
-app.use(cors());
+app.use(
+  cors({
+    origin: appConfig.CLIENT_ORIGIN,
+    credentials: true
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser());
 
 // static files
 app.use(express.static("public"));
@@ -41,7 +48,7 @@ app.use(routeProtector);
 app.use(requestLogger);
 
 // app router
-app.use(appRouter);
+app.use("/api/v1", appRouter);
 
 // error handler
 app.use(errorHandler);

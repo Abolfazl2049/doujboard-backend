@@ -3,10 +3,7 @@ import authService from "./app.js";
 import {LoginRegisterSchema} from "./schema.js";
 const router = express.Router();
 
-// Validate an existing user and issue a JWT
-router.post("/login", LoginRegisterSchema, authService.login);
-
-// Register a new user
-router.post("/signup", LoginRegisterSchema, authService.signup);
+// Authenticate (creates the user when it doesn't exist)
+router.post("/signin", LoginRegisterSchema, authService.signin);
 
 export default router;

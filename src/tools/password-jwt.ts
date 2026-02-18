@@ -7,8 +7,13 @@ import {PassportStatic} from "passport";
 
 const PUB_KEY = fs.readFileSync(path.resolve("pub_key.pem"), "utf8");
 
+const cookieExtractor = (req: any) => {
+  if (!req || !req.cookies) return null;
+  return req.cookies["auth_token"];
+};
+
 const options = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor, ExtractJwt.fromAuthHeaderAsBearerToken()]),
   secretOrKey: PUB_KEY,
   algorithms: ["RS256"]
 };
@@ -16,7 +21,7 @@ const options = {
 let configJwtPassport = (passport: PassportStatic) => {
   passport.use(
     new JwtStrategy(options as any, function (payload: any, done: Function) {
-      userDb.User.findOne({where: {id: payload.sub}  , attributes : ['username'  , 'id' , 'createdAt']})
+      userDb.User.findOne({where: {id: payload.sub}, attributes: ["username", "id", "createdAt"]})
         .then(user => {
           if (user) return done(null, user);
           else return done(null, false);

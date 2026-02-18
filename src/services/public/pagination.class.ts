@@ -1,5 +1,4 @@
 import {Request} from "express";
-import {Model} from "sequelize";
 class Pagination {
   page: number = 1;
   limit: number = 10;

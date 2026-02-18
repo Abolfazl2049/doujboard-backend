@@ -7,9 +7,7 @@
   },
   "host": "localhost:4400",
   "basePath": "/",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "securityDefinitions": {
     "Bearer": {
       "type": "apiKey",
@@ -18,12 +16,8 @@
       "description": "Enter your bearer token in the format: Bearer <token>"
     }
   },
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/": {
       "get": {
@@ -35,9 +29,9 @@
         }
       }
     },
-    "/auth/login": {
+    "/auth/signin": {
       "post": {
-        "description": "",
+        "description": "Authenticate existing user or create a new user (signup on-demand).",
         "parameters": [
           {
             "name": "body",
@@ -58,33 +52,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          }
-        }
-      }
-    },
-    "/auth/signup": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "password": {
-                  "example": "any"
-                },
-                "username": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
           }
         }
       }
